@@ -4,35 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Document</title>
 </head>
 <body>
-    <form action="result.jsp" method="post" enctype="multipart/form-data">
-        <input id="img-upload" type="file" name="image">
-        <input type="submit" value="Upload">
+    <form id="frm" action="http://localhost:8080/result" method="post" enctype="multipart/form-data">
+        키패드 background 이미지<input id="keypadMainImage" type="file" name="keypadImage">
+        <input id="submit" type="submit" value="가상키패드 디자인 파일 생성!">
+        
     </form>
     <p id="result"></p>
 
     <hr/>
     <ul>
-        <li>| 1 | 2 | 3 | 키 입력 로고 이름 <input type="text" placeholder="logo.png"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 타입 ttf이름 <input type="text" placeholder="NanumGothic.ttf"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 크기 <input type="number" placeholder="35"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 색상 <input type="color"></li>
+        <li>| 1 | 2 | 3 | 키패드 logo<input type="file" name="keypadLogo1" class="logo"></li>
+        <li>| 1 | 2 | 3 | 키 입력 글자 타입 <input type="file" name="keypadFontType1" class="fonttype"></li>
+        <li>| 1 | 2 | 3 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+        <li>| 1 | 2 | 3 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
 
         <br/><br/>
 
-        <li>| 4 | 5 | 6 | 키 입력 로고 이름 <input type="text" placeholder="logo.png"></li>
-        <li>| 1 | 5 | 6 | 키 입력 글자 타입 ttf이름 <input type="text" placeholder="NanumGothic.ttf"></li>
-        <li>| 4 | 5 | 6 | 키 입력 글자 크기 <input type="number" placeholder="35"></li>
-        <li>| 4 | 5 | 6 | 키 입력 글자 색상 <input type="color"></li>
+        <li>| 4 | 5 | 6 | 키패드 logo <input type="file" name="keypadLogo2" class="logo"></li>
+        <li>| 1 | 5 | 6 | 키 입력 글자 타입  <input type="file" name="keypadFontType2" class="fonttype"></li>
+        <li>| 4 | 5 | 6 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+        <li>| 4 | 5 | 6 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
 
         <br/><br/>
 
-        <li>| 7 | 8 | 9 | 0 | 키 입력 사진 이름 <input type="text" placeholder="logo.png"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 타입 ttf이름 <input type="text" placeholder="NanumGothic.ttf"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 크기 <input type="number" placeholder="35"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 색상 <input type="color"></li>
+        <li>| 7 | 8 | 9 | 0 | 키패드 logo <input type="file" name="keypadLogo3" class="logo"></li>
+        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 타입 <input type="file" name="keypadFontType3" class="fonttype"></li>
+        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
     </ul>
 
     <hr />
@@ -40,10 +42,77 @@
     <pre id="json-display"></pre>
 
     <script>
-        var fileInput = document.getElementById("img-upload");
+
+
+        $('#frm').on('submit', function(e){ // frm submit 될때
+                e.preventDefault(); // 새로 고침 방지 
+
+                let inputs = document.querySelectorAll('input');
+
+                for(let i = 0 ; i < inputs.size ; i++){
+                    if(inputs[i].className === 'logo'){ // type img
+                        this.appendChild(inputs[i]);
+                        continue;
+                    }
+                    if(inputs[i].className === 'fonttype'){ // type fonttype ttf
+                        this.appendChild(inputs[i]);
+                        
+                        continue;
+                    }
+                    if(inputs[i].className === 'fontsize'){ // type number
+                        let fontsize =  inputs[i].value;
+                        designDummy.font.size = fontsize === 0?22:fontsize;
+                        continue;
+                    }
+                    if(inputs[i].className === 'fontcolor'){ // type string
+                        designDummy.font.color = inputs[i].value;
+                        continue;
+                    }
+                }
+                // for(let i = 0 ; i < imgs.size ; i++){
+                //     this.appendChild($('#'+imgs.logos[i])[0])
+                //     console.log('??');
+                // }
+        
+                var formObj = new FormData();
+                formObj.append('file', keypadMainImage.files[0]);
+                formObj.append('data', JSON.stringify(designDummy))
+
+                $.ajax({
+                url: "http://localhost:8080/result", // 이미지 업로드를 처리하는 URL
+                type: "POST",
+                data: formObj, // FormData 객체 전송
+                contentType: false, // 기본값은 application/x-www-form-urlencoded, 바이너리 데이터 전송 시 false로 설정
+                processData: false, // 기본값은 true, formData를 문자열로 변환하지 않도록 false로 설정
+                success: function(data) {
+                    // 응답 데이터 처리
+                    console.log(data);
+                },
+                error: function(xhr, status, error) {
+                    // 오류 처리
+                    console.log("Error: " + error);
+                }
+                });
+               
+        })
+    </script>
+        
+    <!-- 키패드 배경화면 이미지 업로드 시 -->
+    <script>
+      
+        var fileInput = document.getElementById("");
+        // logo name added
+       
+    </script>
+
+    <script>
+        var fileInput = document.getElementById("keypadMainImage");
 
         fileInput.addEventListener("change", function() {
-        var file = fileInput.files[0];
+        
+            var file = fileInput.files[0]; // 가상키패드 배경 이미지 정보 
+            designDummy.background=file.name; // 가상키패드 배경 이미지 추가
+            
 
         var img = new Image();
         img.onload = function() {
@@ -54,12 +123,14 @@
             console.log("이미지 높이: " + height + "px");
             let result = document.getElementById('result');
             result.textContent = width+'px, '+height+'px';
+            displayDesignAttri(); // json 갱신
         };
         img.src = URL.createObjectURL(file);
         });
 
-        var design = {
-            render:
+// object for Dummy start
+        var designDummy = { // dummy 객체 
+            renderer:
                 [
                     {
                         type:'linear',
@@ -102,7 +173,7 @@
                     {
                         type:'linear',
                         dummy:{
-                            count:1,
+                            count:0,
                             file:'logo.png'
                         },
                         font:{
@@ -125,13 +196,157 @@
                 },
                 background:"number.png",
         }
+
+
+        
+
+       
+// object for Dummy end
+
+// object for noDummy start 
+        var designNoDummy = {// noDummy 객체
+            renderer : [
+                {
+                    type: 'linear',
+                    dummy: {
+                            count: 1,
+                            file: 'logo.png'
+                    }
+                    ,
+                    font: {
+                        file:'NanumGothic.ttf',
+                        type: 'BOLD',
+                        size: 35,
+                        color: '85,85,85',
+                        location: '0,-2',
+                    },
+                    chars:'1234',
+                    key0:'rect:0,1,160,102',
+                    key1:'rect:160,1,160,102',
+                    key2:'rect:320,1,160,102',
+                    key3:'rect:480,1,160,102',
+                },
+                {
+                    type: 'linear',
+                    dummy: {
+                            count: 0,
+                            file: 'logo.png'
+                    }
+                    ,
+                    font: {
+                        file:'NanumGothic.ttf',
+                        type: 'BOLD',
+                        size: 35,
+                        color: '85,85,85',
+                        location: '0,-2',
+                    },
+                    chars:'7890',
+                    key0:'rect:0,205,160,102',
+                    key1:'rect:160,205,160,102',
+                    key2:'rect:320,205,160,102',
+                    key3:'rect:480,205,160,102',
+                },
+            ],
+            key:{
+                    backspace:"rect:0,307,160,102",
+                    close:"rect:161,307,479,105"
+                },
+                background:"number.png",
+        }
+// object for noDummy end
     </script>
 
     <script>
-        var jsonStr = JSON.stringify(design, null, 2); // 들여쓰기와 줄바꿈 적용
+        // designNoDummy
+       function displayDesignAttri(){
+            var jsonStr = JSON.stringify(designDummy, null, 2); // 들여쓰기와 줄바꿈 적용
 
-        var jsonDisplay = document.getElementById("json-display");
-        jsonDisplay.textContent = jsonStr;
+            var jsonDisplay = document.getElementById("json-display");
+            jsonDisplay.textContent = jsonStr;
+       }
+       let inputsObectForAddEventListener = { // file 객체 전부 여기에 등록
+                    keypadMainImage:{cnt:0, obj:[]},
+                    keypadLogoObj:{cnt:0, obj:[]},
+                    fonrtTypettfObj:{cnt:0, obj:[]},
+                    fontsize:{cnt:0, obj:[]},
+                    fontColor:{cnt:0, obj:[]},
+        }
+       document.addEventListener('DOMContentLoaded', function(){
+       
+                let inputs = document.querySelectorAll('input');
+                
+                // file 객체 초기화 
+                for(let i = 0 ; i < inputs.length ; i++){
+                    if(inputs[i].className === 'logo'){ // type img
+                        let cnt = inputsObectForAddEventListener.keypadLogoObj.cnt;
+                        inputsObectForAddEventListener.keypadLogoObj.obj[cnt] = inputs[i];
+                        inputsObectForAddEventListener.keypadLogoObj.cnt += 1;
+                    }
+                    if(inputs[i].className === 'fonttype'){ // type fonttype ttf
+                        let cnt = inputsObectForAddEventListener.fonrtTypettfObj.cnt;
+                        inputsObectForAddEventListener.fonrtTypettfObj.obj[cnt] = inputs[i];
+                        inputsObectForAddEventListener.fonrtTypettfObj.cnt += 1;
+                    }
+                    if(inputs[i].type === 'number' && inputs[i].className === 'fontsize'){ // font size obj
+                        let cnt = inputsObectForAddEventListener.fontsize.cnt;
+                        inputsObectForAddEventListener.fontsize.obj[cnt] = inputs[i];
+                        inputsObectForAddEventListener.fontsize.cnt += 1;
+                    }
+                    if(inputs[i].type === 'color' && inputs[i].className === 'fontcolor'){ // font size obj
+                        let cnt = inputsObectForAddEventListener.fontColor.cnt;
+                        inputsObectForAddEventListener.fontColor.obj[cnt] = inputs[i];
+                        inputsObectForAddEventListener.fontColor.cnt += 1;
+                    }
+                }
+
+                // 이미지를 변경할때 마다 객체에 이름을 변경
+                changeImgObj();
+
+            displayDesignAttri();
+       })
+
+       function changeImgObj(){ // 파일 객체 이벤트 초기화
+               for(let i = 0 ;  i < inputsObectForAddEventListener.keypadLogoObj.cnt ; i++){
+                        let kepadLogoObj = inputsObectForAddEventListener.keypadLogoObj.obj[i];
+                        let fonttypeObj = inputsObectForAddEventListener.fonrtTypettfObj.obj[i];
+                        let fontsize = inputsObectForAddEventListener.fontsize.obj[i];
+                        let fontcolor = inputsObectForAddEventListener.fontColor.obj[i];
+
+                    kepadLogoObj.addEventListener("change", function() {
+                        var file = kepadLogoObj.files[0]; // 가상키패드 이미지 정보 추가
+                        designDummy.renderer[i].dummy.file =file.name; // 가상키패드 배경 이미지 이름 추가
+                        console.log('이미지 이름: '+file.name);
+                        var img = new Image();
+                        img.onload = function() {
+                            var width = this.width; // 이미지 너비 (픽셀 단위)
+                            var height = this.height; // 이미지 높이 (픽셀 단위)
+                            console.log("이미지 너비: " + width + "px");
+                            console.log("이미지 높이: " + height + "px");
+                            let result = document.getElementById('result');
+                            result.textContent = width+'px, '+height+'px';
+                            displayDesignAttri(); // json 갱신
+                        };
+                        img.src = URL.createObjectURL(file);
+                    });
+
+                    fonttypeObj.addEventListener("change", function() {
+                        var file = fonttypeObj.files[0]; // 가상키패드 폰트 타입 정보 
+                        designDummy.renderer[i].font.file=file.name; // 가상키패드 폰트 타입 이름 추가
+                        console.log('폰트 이름: '+file.name);
+                        displayDesignAttri(); // json 갱신
+                    });
+
+                    fontsize.addEventListener('change', function(){
+                        designDummy.renderer[i].font.size = fontsize.value;
+                        displayDesignAttri(); // json 갱신
+                    })
+
+                    fontcolor.addEventListener('change', function(){
+                        designDummy.renderer[i].font.color = fontcolor.value;
+                        displayDesignAttri(); // json 갱신
+                    })
+               }
+       }
     </script>
     <style>
         pre {
@@ -139,7 +354,7 @@
             white-space: pre-wrap; /* 줄바꿈을 유지 */
             font-family: monospace; /* 모노스페이스 폰트 사용 */
             padding: 10px; /* 여백 추가 */
-            background-color: #eee; /* 배경색 지정 */
+            background-color: lightcyan; /* 배경색 지정 */
             border-radius: 5px; /* 모서리 둥글게 */
         }
     </style>
