@@ -5,41 +5,60 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="noDummy.css">
+    <script type="text/javascript" src="/transkey_mobile/transkey.js"></script>
+    <link rel="stylesheet" type="text/css"href="/transkey_mobile/transkey.css" />
     <title>Document</title>
 </head>
 <body>
-    <form id="frm" action="http://localhost:8080/result" method="post" enctype="multipart/form-data">
-        키패드 background 이미지<input id="keypadMainImage" type="file" name="keypadImage">
-        <input id="submit" type="submit" value="가상키패드 디자인 파일 생성!">
+
+    <div id="root">
+        <div id="setting">
+            <form id="frm" action="http://localhost:8080/result" method="post" enctype="multipart/form-data">
+                키패드 background 이미지<input id="keypadMainImage" type="file" name="keypadImage">
+                <input id="submit" type="submit" value="가상키패드 디자인 파일 생성!">
+                
+            </form>
+            <p id="result"></p>
         
-    </form>
-    <p id="result"></p>
-
-    <hr/>
-    <ul>
-        <li>| 1 | 2 | 3 | 키패드 logo<input type="file" name="keypadLogo1" class="logo"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 타입 <input type="file" name="keypadFontType1" class="fonttype"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
-        <li>| 1 | 2 | 3 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
-
-        <br/><br/>
-
-        <li>| 4 | 5 | 6 | 키패드 logo <input type="file" name="keypadLogo2" class="logo"></li>
-        <li>| 4 | 5 | 6 | 키 입력 글자 타입  <input type="file" name="keypadFontType2" class="fonttype"></li>
-        <li>| 4 | 5 | 6 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
-        <li>| 4 | 5 | 6 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
-
-        <br/><br/>
-
-        <li>| 7 | 8 | 9 | 0 | 키패드 logo <input type="file" name="keypadLogo3" class="logo"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 타입 <input type="file" name="keypadFontType3" class="fonttype"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
-        <li>| 7 | 8 | 9 | 0 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
-    </ul>
-
-    <hr />
-    <p>가상키패드 설정 값</p>
-    <pre id="json-display"></pre>
+            <hr/>
+            <ul>
+                <li>| 1 | 2 | 3 | 키패드 logo<input type="file" name="keypadLogo1" class="logo"></li>
+                <li>| 1 | 2 | 3 | 키 입력 글자 타입 <input type="file" name="keypadFontType1" class="fonttype"></li>
+                <li>| 1 | 2 | 3 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+                <li>| 1 | 2 | 3 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
+        
+                <br/><br/>
+        
+                <li>| 4 | 5 | 6 | 키패드 logo <input type="file" name="keypadLogo2" class="logo"></li>
+                <li>| 4 | 5 | 6 | 키 입력 글자 타입  <input type="file" name="keypadFontType2" class="fonttype"></li>
+                <li>| 4 | 5 | 6 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+                <li>| 4 | 5 | 6 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
+        
+                <br/><br/>
+        
+                <li>| 7 | 8 | 9 | 0 | 키패드 logo <input type="file" name="keypadLogo3" class="logo"></li>
+                <li>| 7 | 8 | 9 | 0 | 키 입력 글자 타입 <input type="file" name="keypadFontType3" class="fonttype"></li>
+                <li>| 7 | 8 | 9 | 0 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+                <li>| 7 | 8 | 9 | 0 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
+            </ul>
+        
+            <hr />
+            <p>가상키패드 설정 값</p>
+            <pre id="json-display"></pre>
+        </div>
+        <div id="point">
+            <form id="frm2" name="frm2" action="validate_mobile.jsp" method="post">
+                <div>
+                    <label for="pwd4">숫자</label><input type="password" name="pwd4" id="pwd4" data-tk-kbdType="number" onfocus="mtk.onKeyboard(this);" />
+                    <span id="pwd4_tk_btn">보안입력</span>
+                    <input type="button" value="ajaxTest" onclick="ajaxTest('pwd4');"/>
+                        <br/><br/>	
+                    
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
 
@@ -277,8 +296,48 @@
                     fontsize:{cnt:0, obj:[]},
                     fontColor:{cnt:0, obj:[]},
         }
+        function focusColorEventKeypad(){
+            for(let i = 0 ; i < inputsObectForAddEventListener.keypadLogoObj.obj.length ; i++){
+                inputsObectForAddEventListener.keypadLogoObj.obj[i].addEventListener('mouseover', function(){
+                    let blanks = document.querySelectorAll('[aria-label="빈칸"]');
+                    for(let i = 0 ; i < blanks.length ; i++ ){
+                        blanks[i].style.backgroundColor='lightgreen'
+                    }
+                })
+                inputsObectForAddEventListener.keypadLogoObj.obj[i].addEventListener('mouseout', function(){
+                    let blanks = document.querySelectorAll('[aria-label="빈칸"]');
+                    for(let i = 0 ; i < blanks.length ; i++ ){
+                        blanks[i].style.backgroundColor='white'
+                    }
+                })
+                inputsObectForAddEventListener.fontColor.obj[i].addEventListener('mouseover', function(){
+                    let blanks = document.querySelectorAll('.dv_transkey_div_2.dv_transkey_div2_Height');
+                    for(let i = 0 ; i < blanks.length ; i++ ){
+                        blanks[i].style.backgroundColor='lightgreen'
+                    }
+                })
+                inputsObectForAddEventListener.fontColor.obj[i].addEventListener('mouseout', function(){
+                    let blanks =document.querySelectorAll('.dv_transkey_div_2.dv_transkey_div2_Height');
+                    for(let i = 0 ; i < blanks.length ; i++ ){
+                        blanks[i].style.backgroundColor='white'
+                    }
+                })
+            }
+           
+           
+        }
        document.addEventListener('DOMContentLoaded', function(){
-       
+                if(typeof initmTranskey != undefined){
+                    initmTranskey();
+                    //document.querySelector('#mtk_pwd4').style.display='block'
+                    document.querySelector('#pwd4').onfocus()
+                    mtk.close();
+                    document.querySelector('#mtk_pwd4').style.display='block'
+                    setTimeout(() => {
+                        focusColorEventKeypad();
+                    }, 500);
+                }
+        
                 let inputs = document.querySelectorAll('input');
                 
                 // file 객체 초기화 

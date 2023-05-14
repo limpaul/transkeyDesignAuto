@@ -8,11 +8,8 @@ public class KeyGenMain {
 
 	
 	public static void main(String[] args) {
-		args = new String[3];
-		args[0] = "number.mkb";
-		args[1] = "0.08";
 		boolean isQwerty = Boolean.parseBoolean(args[2]);
-		boolean isShuffle = false; //for number_nodummy
+		boolean isShuffle = Boolean.parseBoolean(args[3]); //for number_nodummy
 		String folder = "newKeyboard2";
 //		String mkbFile = "number.mkb";
 //		String pro = "0.08";

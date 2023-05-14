@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,width=device-width"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<script type="text/javascript" src="/transkey_mobile/transkey.js"></script>
+
+<link rel="stylesheet" type="text/css"href="/transkey_mobile/transkey.css" />
+<title>mTranskey demo</title>
+</head>
+<body onload="initmTranskey();">
+
+<div>
+	쿼티자판, input type:password, Text <br/> <br/>
+</div>
+		
+					<form id="frm" name="frm" action="validate_mobile.jsp" method="post">
+						<div>
+							<label for="pwd3">소/특</label><input type="password" name="pwd3" id="pwd3" data-tk-kbdType="qwerty" onfocus="mtk.onKeyboard(this);" />
+								<span id="pwd3_tk_btn">보안입력</span>
+								<br/><br/>
+								<input type="button" value="ajaxTest" onclick="ajaxTest('pwd3');"/>
+								<br/><br/> 
+							<label for="pwd4">숫자</label><input type="password" name="pwd4" id="pwd4" data-tk-kbdType="number" onfocus="mtk.onKeyboard(this);" />
+								<span id="pwd4_tk_btn">보안입력</span>
+								<br/><br/>
+								<input type="button" value="ajaxTest" onclick="ajaxTest('pwd4');"/>
+								<br/><br/>	
+							
+						</div>
+					</form>
+
+<script type="text/javascript">
+
+
+function ajaxTest(id){
+	var values = mtk.inputFillEncData(document.getElementById(id));
+	var name = document.getElementById(id).name;
+	var hidden = values.hidden;
+	var hmac = values.hmac;
+	var frmId = use_form_id?"_"+document.getElementById("hidfrmId").value:"";
+	var exe2e = transkey[id].exE2E;
+	var request = new XMLHttpRequest();
+	
+	request.open("POST", "ajaxTest.jsp", useAsyncTranskey);
+	
+	if(useCORS)
+		request.withCredentials = true;
+	else
+		request.setRequestHeader("Cache-Control", "no-cache");
+	
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+	
+	request.onreadystatechange = function (e) {
+		  if (request.readyState == 4 && request.status == 200) {
+			  tk_alert(request.responseText.replace(/\n/gi, '').replace(/\r/gi,''));
+		  }
+	};
+	request.send("id=" + id + "&name=" + name + "&transkey_"+id+"_"+frmId+"=" + hidden + "&transkey_HM_"+id+"_"+frmId+"=" + hmac+ "&transkey_ExE2E_"+id+"_"+frmId+"="+exe2e+"&transkeyUuid_"+frmId+"=" + mtk.transkeyUuid+"&hidfrmId="+frmId+tk_origin);
+}
+
+</script>
+</body>
+</html>
