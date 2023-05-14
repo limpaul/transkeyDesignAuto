@@ -1,19 +1,32 @@
 package com.design.transkey.controller;
 
 import com.design.transkey.kepadObj.NumberDummyObj;
+import com.design.transkey.transkey.KeyArcive;
+import com.design.transkey.transkey.KeyGenMain;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 
 @CrossOrigin
 @RestController
 public class GenerateTranskey {
     @PostMapping("/result")
-    public String result(@RequestParam(name = "file", required = false)MultipartFile file, @RequestParam("data") String data){
+    public String result(@RequestParam(name = "file", required = false)MultipartFile file,
+                         @RequestParam(name = "logo1", required = false)MultipartFile logoFile1,
+                         @RequestParam(name = "logo2", required = false)MultipartFile logoFile2,
+                         @RequestParam(name = "logo3", required = false)MultipartFile logoFile3,
+                         @RequestParam(name = "font1", required = false)MultipartFile fontFile1,
+                         @RequestParam(name = "font2", required = false)MultipartFile fontFile2,
+                         @RequestParam(name = "font3", required = false)MultipartFile fontFile3,
+                         @RequestParam("data") String data){
         try{
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -28,14 +41,38 @@ public class GenerateTranskey {
                 }else if ( i == 2){
                     fileName ="number3.mkb";
                 }
-                createMkbFile(obj, fileName ,i);
+                createMkbFile(obj, fileName ,i); // dummy에 관련 한 mkb 파일 생성
             }
 
 
             // 이미지 처리 및 이미지 저장
-            if(file!=null){
+            if(file != null){
                 saveImage(file);
             }
+            // 폰트파일 저장
+            if(fontFile1 != null){
+                saveTtf(fontFile1);
+            }
+            if(fontFile2 != null){
+                saveTtf(fontFile2);
+            }
+            if(fontFile3 != null){
+                saveTtf(fontFile3);
+            }
+
+            // 로고 처리 및 이미지 저장
+            if(logoFile1 != null){
+                saveImage(logoFile1);
+            }
+            if(logoFile2 != null){
+                saveImage(logoFile2);
+            }
+            if(logoFile3 != null){
+                saveImage(logoFile3);
+            }
+
+            KeyGenMain.main(new String[]{"number.mkb", "0.08", "false"});
+            KeyArcive.main(new String[]{"false"});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,14 +80,48 @@ public class GenerateTranskey {
         return "Test";
     }
 
-    public void saveImage(MultipartFile file) throws Exception {
-        File convertedFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convertedFile);
-        fos.write(file.getBytes());
-        fos.close();
+    private void saveTtf(MultipartFile fontFile) throws IOException {
+        // 파일 원본 이름 추출
+        String fileName = StringUtils.cleanPath(fontFile.getOriginalFilename());
+
+        // 파일 경로 설정
+        String fileDirectory = "newKeyboard2/";
+        Path filePath = Paths.get(fileDirectory+fileName);
+
+
+        // newKeyboard2 디렉토리가 없을 경우 생성
+        if(!Files.exists(filePath.getParent())){
+            Files.createDirectories(filePath.getParent());
+        }
+
+        // 파일 저장
+        try (InputStream inputStream = fontFile.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
+
+    public void saveImage(MultipartFile file) throws Exception {
+        // 파일 원본 이름 추출
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        // 파일 경로 설정
+        String fileDirectory = "newKeyboard2/";
+        Path filePath = Paths.get(fileDirectory+fileName);
+
+
+        // newKeyboard2 디렉토리가 없을 경우 생성
+        if(!Files.exists(filePath.getParent())){
+            Files.createDirectories(filePath.getParent());
+        }
+        // 파일 저장
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+    }
+
     public void createMkbFile(NumberDummyObj obj, String fileName, int mkbNum) throws Exception{ // dummy 같으경우 renderer.dummy.count renderer.chars 값 두가지가 바뀜
-        FileWriter writer = new FileWriter(fileName);
+        FileWriter writer = new FileWriter("newKeyboard2/"+fileName);
         writer.write("## Created at 2023. 05. 13\n");
         writer.write("## Created by bwlim\n\n");
 

@@ -25,7 +25,7 @@
         <br/><br/>
 
         <li>| 4 | 5 | 6 | 키패드 logo <input type="file" name="keypadLogo2" class="logo"></li>
-        <li>| 1 | 5 | 6 | 키 입력 글자 타입  <input type="file" name="keypadFontType2" class="fonttype"></li>
+        <li>| 4 | 5 | 6 | 키 입력 글자 타입  <input type="file" name="keypadFontType2" class="fonttype"></li>
         <li>| 4 | 5 | 6 | 키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
         <li>| 4 | 5 | 6 | 키 입력 글자 색상 <input type="color" class="fontcolor"></li>
 
@@ -74,10 +74,16 @@
                 //     console.log('??');
                 // }
         
-                var formObj = new FormData();
+                var formObj = new FormData(); // 서버 전송시 이미지 및 폰트 및 설정 값들 
                 formObj.append('file', keypadMainImage.files[0]);
+                formObj.append('logo1', inputsObectForAddEventListener.keypadLogoObj.obj[0].files[0])
+                formObj.append('logo2', inputsObectForAddEventListener.keypadLogoObj.obj[1].files[0])
+                formObj.append('logo3', inputsObectForAddEventListener.keypadLogoObj.obj[2].files[0])
+                formObj.append('font1', inputsObectForAddEventListener.fonrtTypettfObj.obj[0].files[0])
+                formObj.append('font2', inputsObectForAddEventListener.fonrtTypettfObj.obj[1].files[0])
+                formObj.append('font3', inputsObectForAddEventListener.fonrtTypettfObj.obj[2].files[0])
                 formObj.append('data', JSON.stringify(designDummy))
-
+                
                 $.ajax({
                 url: "http://localhost:8080/result", // 이미지 업로드를 처리하는 URL
                 type: "POST",
@@ -342,7 +348,10 @@
                     })
 
                     fontcolor.addEventListener('change', function(){
-                        designDummy.renderer[i].font.color = fontcolor.value;
+                        var r = parseInt(fontcolor.value.substr(1, 2), 16);
+                        var g = parseInt(fontcolor.value.substr(3, 2), 16);
+                        var b = parseInt(fontcolor.value.substr(5, 2), 16);
+                        designDummy.renderer[i].font.color = r+','+g+','+b;
                         displayDesignAttri(); // json 갱신
                     })
                }

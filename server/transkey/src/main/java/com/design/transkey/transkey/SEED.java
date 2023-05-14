@@ -11,7 +11,7 @@
 
 /********************************* S-box table ********************************/
 
-package transkey;
+package com.design.transkey.transkey;
 
 public class SEED
 {

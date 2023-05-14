@@ -1,4 +1,4 @@
-package transkey; 
+package com.design.transkey.transkey;
  
 import java.awt.Polygon;
 import java.io.BufferedReader;
@@ -11,8 +11,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import transkey.iar.IAR;
+import com.design.transkey.transkey.iar.IAR;
     
 public class TransKey {  
 	/*

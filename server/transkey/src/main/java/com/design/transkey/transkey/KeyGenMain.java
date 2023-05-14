@@ -1,16 +1,17 @@
-package transkey;
+package com.design.transkey.transkey;
 
 import java.io.File;
 
-import transkey.generator.Generator;
+import com.design.transkey.transkey.generator.Generator;
 
 public class KeyGenMain {
 
 	
 	public static void main(String[] args) {
-		
-
-		boolean isQwerty = true;
+		args = new String[3];
+		args[0] = "number.mkb";
+		args[1] = "0.08";
+		boolean isQwerty = Boolean.parseBoolean(args[2]);
 		boolean isShuffle = false; //for number_nodummy
 		String folder = "newKeyboard2";
 //		String mkbFile = "number.mkb";
@@ -19,9 +20,10 @@ public class KeyGenMain {
 //		String pro = "0.08";
 //		String mkbFile = "qwerty.mkb";
 //		String pro = "0.00001";
-		String mkbFile = "qwerty_space.mkb";
-		String pro = "0.00001";
-		
+//		String mkbFile = "qwerty_space.mkb";
+		String mkbFile = args[0];
+//		String pro = "0.00001";
+		String pro = args[1];
 		File dirBase = new File(folder);
 		File dirOutput = new File(folder+"_GENDATA/");
 		

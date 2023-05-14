@@ -1,4 +1,4 @@
-package transkey;
+package com.design.transkey.transkey;
 
 import java.io.Serializable;
  
