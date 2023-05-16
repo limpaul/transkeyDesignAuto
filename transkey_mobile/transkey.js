@@ -9,8 +9,12 @@
 //config
 //setting
 var transkey_url = '/transkey_mobile';
-var transkey_surl ='http://192.168.219.110:8080/transkeyServlet';
+//var transkey_surl ='http://10.47.17.169:8080/transkeyServlet';
+//var transkey_apiurl = 'http://10.47.17.169:8080/transkey/api/';
+
+var transkey_surl ='http://127.0.0.1:8080/transkeyServlet';
 var transkey_apiurl = 'http://127.0.0.1:8080/transkey/api/';
+
 var transkey_encDelimiter = ",";
 var transkey_delimiter = '$';
 var keyboardLayouts = ["qwertyMobile", "numberMobile"];

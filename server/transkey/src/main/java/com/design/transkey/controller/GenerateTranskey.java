@@ -2,6 +2,7 @@ package com.design.transkey.controller;
 
 import com.design.transkey.kepadObj.NumberDummyObj;
 import com.design.transkey.nodummy.NumberNoDummyObj;
+import com.design.transkey.qwertyspace.QwertySpaceObj;
 import com.design.transkey.transkey.KeyArcive;
 import com.design.transkey.transkey.KeyGenMain;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,14 @@ import java.nio.file.StandardCopyOption;
 @CrossOrigin
 @RestController
 public class GenerateTranskey {
+
+    @PostMapping("/resultQwertySpace")
+    public String resultQwertySpace(@RequestParam("data")String data)throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        QwertySpaceObj obj = mapper.readValue(data, QwertySpaceObj.class);
+        System.out.println(obj.toString());
+        return "resultQwertySpace";
+    }
     @PostMapping("/resultNodummy")
     public String resultNodummy(@RequestParam(name = "file", required = false)MultipartFile file,
                                 @RequestParam(name = "logo1", required = false)MultipartFile logoFile1,
@@ -56,6 +65,8 @@ public class GenerateTranskey {
         KeyGenMain.main(new String[]{"number_nodummy.mkb", "0.08", "false", "true"});
         KeyArcive.main(new String[]{"false"}); // true면 qwerty, false면 number 압축
 
+        // 디렉토리 WEB-INF/raon_config/keyboard/옮기고
+        // was 재기동
         return "hello noDummy";
     }
 

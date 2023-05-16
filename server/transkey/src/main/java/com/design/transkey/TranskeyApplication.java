@@ -10,4 +10,5 @@ public class TranskeyApplication {
 		SpringApplication.run(TranskeyApplication.class, args);
 	}
 
+
 }
