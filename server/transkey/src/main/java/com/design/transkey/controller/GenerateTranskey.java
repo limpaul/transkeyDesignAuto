@@ -2,7 +2,9 @@ package com.design.transkey.controller;
 
 import com.design.transkey.kepadObj.NumberDummyObj;
 import com.design.transkey.nodummy.NumberNoDummyObj;
+import com.design.transkey.qwertyspace.Display;
 import com.design.transkey.qwertyspace.QwertySpaceObj;
+import com.design.transkey.qwertyspace.Renderer;
 import com.design.transkey.transkey.KeyArcive;
 import com.design.transkey.transkey.KeyGenMain;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,10 +24,38 @@ import java.nio.file.StandardCopyOption;
 public class GenerateTranskey {
 
     @PostMapping("/resultQwertySpace")
-    public String resultQwertySpace(@RequestParam("data")String data)throws Exception{
+    public String resultQwertySpace(@RequestParam(name = "file", required = false)MultipartFile file,
+                                    @RequestParam(name = "logo1", required = false)MultipartFile logoFile1,
+                                    @RequestParam(name = "logo2", required = false)MultipartFile logoFile2,
+                                    @RequestParam(name = "logo3", required = false)MultipartFile logoFile3,
+                                    @RequestParam(name = "logo4", required = false)MultipartFile logoFile4,
+                                    @RequestParam(name = "font1", required = false)MultipartFile fontFile1,
+                                    @RequestParam(name = "font2", required = false)MultipartFile fontFile2,
+                                    @RequestParam(name = "font3", required = false)MultipartFile fontFile3,
+                                    @RequestParam(name = "font4", required = false)MultipartFile fontFile4,
+
+                                    @RequestParam("data") String data)throws Exception{
         ObjectMapper mapper = new ObjectMapper();
         QwertySpaceObj obj = mapper.readValue(data, QwertySpaceObj.class);
         System.out.println(obj.toString());
+        // 이미지 처리 및 이미지 저장
+        saveImage(file);
+
+        // 폰트파일 저장
+        saveTtf(fontFile1);
+        saveTtf(fontFile2);
+        saveTtf(fontFile3);
+        saveTtf(fontFile4);
+
+
+        // 로고 처리 및 이미지 저장
+        saveImage(logoFile1);
+        saveImage(logoFile2);
+        saveImage(logoFile3);
+        saveImage(logoFile4);
+
+
+        createMkbForQwertySpaceFile(obj, "qwerty_space.mkb");
         return "resultQwertySpace";
     }
     @PostMapping("/resultNodummy")
@@ -42,25 +72,17 @@ public class GenerateTranskey {
         createMkbForNoDummyFile(obj, "number_nodummy.mkb");
 
         // 이미지 처리 및 이미지 저장
-        if(file != null){
-            saveImage(file);
-        }
+        saveImage(file);
+
         // 폰트파일 저장
-        if(fontFile1 != null){
-            saveTtf(fontFile1);
-        }
-        if(fontFile2 != null){
-            saveTtf(fontFile2);
-        }
+        saveTtf(fontFile1);
+        saveTtf(fontFile2);
 
 
         // 로고 처리 및 이미지 저장
-        if(logoFile1 != null){
-            saveImage(logoFile1);
-        }
-        if(logoFile2 != null){
-            saveImage(logoFile2);
-        }
+        saveImage(logoFile1);
+        saveImage(logoFile2);
+
 
         KeyGenMain.main(new String[]{"number_nodummy.mkb", "0.08", "false", "true"});
         KeyArcive.main(new String[]{"false"}); // true면 qwerty, false면 number 압축
@@ -104,26 +126,16 @@ public class GenerateTranskey {
                 saveImage(file);
             }
             // 폰트파일 저장
-            if(fontFile1 != null){
-                saveTtf(fontFile1);
-            }
-            if(fontFile2 != null){
-                saveTtf(fontFile2);
-            }
-            if(fontFile3 != null){
-                saveTtf(fontFile3);
-            }
 
-            // 로고 처리 및 이미지 저장
-            if(logoFile1 != null){
-                saveImage(logoFile1);
-            }
-            if(logoFile2 != null){
-                saveImage(logoFile2);
-            }
-            if(logoFile3 != null){
-                saveImage(logoFile3);
-            }
+            saveTtf(fontFile1);
+            saveTtf(fontFile2);
+            saveTtf(fontFile3);
+
+
+            saveImage(logoFile1);
+            saveImage(logoFile2);
+            saveImage(logoFile3);
+
 
             KeyGenMain.main(new String[]{"number.mkb", "0.08", "false", "false"}); // (mkb파일 이름, property, qwerty인지, shuffle ( noDummy일때만 true )
             KeyArcive.main(new String[]{"false"});
@@ -134,7 +146,21 @@ public class GenerateTranskey {
         return "Test";
     }
 
+    private void initQwertyImportantValue(QwertySpaceObj qwertySpaceObj){
+
+        for(int i = 0; i < 3 ; i++){
+            Renderer renderer = qwertySpaceObj.getRenderer()[i];
+            if(i == 1){ // display.L, dispaly.U 초기화
+//                renderer.getChars().getDisplay().setL();
+//                renderer.getChars().getDisplay().setU();
+//                renderer.getChars().getDisplay().setY();
+            }
+        }
+    }
     private void saveTtf(MultipartFile fontFile) throws IOException {
+        if(fontFile == null){
+            return;
+        }
         // 파일 원본 이름 추출
         String fileName = StringUtils.cleanPath(fontFile.getOriginalFilename());
 
@@ -158,6 +184,9 @@ public class GenerateTranskey {
     }
 
     public void saveImage(MultipartFile file) throws Exception {
+        if(file == null){
+            return;
+        }
         // 파일 원본 이름 추출
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -175,6 +204,79 @@ public class GenerateTranskey {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
 
+    }
+    public void createMkbForQwertySpaceFile(QwertySpaceObj obj, String fileName) throws Exception{
+        FileWriter writer = new FileWriter("newKeyboard2/"+fileName);
+        writer.write("## Created at 2023. 05. 13\n");
+        writer.write("## Created by bwlim\n\n");
+
+        for(int i = 0 ; i < 5 ; i++){
+            writer.write("renderer.type="+obj.getRenderer()[i].getType()+"\n");
+            writer.write("renderer.dummy.count="+obj.getRenderer()[i].getDummy().getCount() +"\n");
+            writer.write("renderer.dummy.file="+obj.getRenderer()[i].getDummy().getFile()+"\n");
+            writer.write("renderer.font.file="+obj.getRenderer()[i].getFont().getFile()+"\n");
+            writer.write("renderer.font.type="+obj.getRenderer()[i].getFont().getType()+"\n");
+            writer.write("renderer.font.size="+obj.getRenderer()[i].getFont().getSize()+"\n");
+            writer.write("renderer.font.color="+obj.getRenderer()[i].getFont().getColor()+"\n");
+            writer.write("renderer.font.location="+"\""+obj.getRenderer()[i].getFont().getLocation()+"\"\n"); // ""
+            writer.write("renderer.chars.lower="+"\""+obj.getRenderer()[i].getChars().getLower()+"\"\n"); //""
+            writer.write("renderer.chars.upper="+"\""+obj.getRenderer()[i].getChars().getUpper()+"\"\n"); //""
+            writer.write("renderer.chars.special="+"\""+obj.getRenderer()[i].getChars().getSpecial()+"\"\n"); //""
+
+            // 분기처리 필요 1, 2, 3
+            if(i != 0 && i !=4){
+                Display temp = obj.getRenderer()[i].getChars().getDisplay();
+                if( i == 1){
+                    initQwertySpaceLUValue(temp,"ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔ" ,"ㅃㅉㄸㄲㅆㅛㅕㅑㅒㅖ" );
+                }
+                if( i == 2){
+                    initQwertySpaceLUValue(temp,"ㅁㄴㅇㄹㅎㅗㅓㅏㅣ" ,"ㅁㄴㅇㄹㅎㅗㅓㅏㅣ" );
+                }
+                if( i == 3){
+                    initQwertySpaceLUValue(temp,"ㅋㅌㅊㅍㅠㅜㅡ" , "ㅋㅌㅊㅍㅠㅜㅡ");
+                }
+
+                writer.write("renderer.chars.display.L="+"\""+obj.getRenderer()[i].getChars().getDisplay().getL()+"\"\n"); //""
+                writer.write("renderer.chars.display.U="+"\""+obj.getRenderer()[i].getChars().getDisplay().getU()+"\"\n"); //""
+            }
+            if(i !=0 ){
+                // 분기처리 필요
+                writer.write("renderer.display.y="+"\""+obj.getRenderer()[i].getDisplay().getY()+"\"\n"); //""
+                writer.write("renderer.display.size="+"\""+obj.getRenderer()[i].getDisplay().getSize()+"\"\n"); //""
+            }
+            writer.write("renderer.key0="+"\""+obj.getRenderer()[i].getKey0()+"\"\n");// ""
+            if(i!=4){
+                writer.write("renderer.key1="+"\""+obj.getRenderer()[i].getKey1()+"\"\n");// ""
+                writer.write("renderer.key2="+"\""+obj.getRenderer()[i].getKey2()+"\"\n");// ""
+                writer.write("renderer.key3="+"\""+obj.getRenderer()[i].getKey3()+"\"\n");// ""
+                writer.write("renderer.key4="+"\""+obj.getRenderer()[i].getKey4()+"\"\n");// ""
+                writer.write("renderer.key5="+"\""+obj.getRenderer()[i].getKey5()+"\"\n");// ""
+                writer.write("renderer.key6="+"\""+obj.getRenderer()[i].getKey6()+"\"\n");// ""
+                writer.write("renderer.key7="+"\""+obj.getRenderer()[i].getKey7()+"\"\n");// ""
+            }
+            if(i!=3 && i!=4){
+                writer.write("renderer.key8="+"\""+obj.getRenderer()[i].getKey8()+"\"\n");// ""
+                writer.write("renderer.key9="+"\""+obj.getRenderer()[i].getKey9()+"\"\n");// ""
+                writer.write("renderer.key10="+"\""+obj.getRenderer()[i].getKey10()+"\"\n\n");// ""
+            }
+        }
+
+        writer.write("key.caps="+"\""+obj.getKey().getCaps()+"\"\n");// ""
+        writer.write("key.special="+"\""+obj.getKey().getSpecial()+"\"\n");// ""
+        writer.write("key.clear="+"\""+obj.getKey().getClear()+"\"\n");// ""
+        writer.write("key.backspace="+"\""+obj.getKey().getBackspace()+"\"\n");// ""
+        writer.write("key.close="+"\""+obj.getKey().getClose()+"\"\n\n");// ""
+        writer.write("background="+obj.getBackground()+"\n");
+        writer.write("backgroundSpecial="+obj.getBackground()+"\n");
+        writer.close();
+    }
+    public void initQwertySpaceLUValue(Display display, String lower, String upper){
+        if(display.getL() == null){
+            display.setL(lower);
+        }
+        if(display.getU() == null){
+            display.setU(upper);
+        }
     }
     public void createMkbForNoDummyFile(NumberNoDummyObj obj, String fileName) throws Exception{
 
