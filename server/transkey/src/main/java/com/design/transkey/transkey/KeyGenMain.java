@@ -44,6 +44,9 @@ public class KeyGenMain {
 					if(generator.randomRange(0,300) == 1) {
 						
 						count++;
+						if(count > 5){
+							break;
+						}
 						System.out.println("total : "+count+" th");
 						Generator.generate(generator, count);
 					}

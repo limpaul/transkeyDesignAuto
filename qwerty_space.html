@@ -66,6 +66,14 @@
                 <li>키 입력 글자 색상 <input type="color" class="fontcolor"></li>
                 <br/><br/>
 
+
+                <li>|  -> |</li>
+                <li>키패드 logo <input type="file" name="keypadLogo5" class="logo"></li>
+                <li>키 입력 글자 타입  <input type="file" name="keypadFontType5" class="fonttype"></li>
+                <li>키 입력 글자 크기 <input type="number" placeholder="35" class="fontsize"></li>
+                <li>키 입력 글자 색상 <input type="color" class="fontcolor"></li>
+                <br/><br/>
+
             </ul>
         
             <hr />
@@ -120,7 +128,7 @@
         
                 var formObj = new FormData(); // 서버 전송시 이미지 및 폰트 및 설정 값들 
                 formObj.append('file', keypadMainImage.files[0]);
-                formObj.append('file', keypadSpecialImage.files[0]);
+                formObj.append('special', keypadSpecialImage.files[0]);
                 formObj.append('logo1', inputsObectForAddEventListener.keypadLogoObj.obj[0].files[0])
                 formObj.append('logo2', inputsObectForAddEventListener.keypadLogoObj.obj[1].files[0])
                 formObj.append('logo3', inputsObectForAddEventListener.keypadLogoObj.obj[2].files[0])
@@ -201,7 +209,7 @@
 
                     },
                     font: {
-                        file:'OneShinhanMedium.ttf',
+                        file:'NanumGothic.ttf',
                         type:'BOLD',
                         size:30,
                         color:'52,58,63',
@@ -237,7 +245,7 @@
 
                     },
                     font: {
-                        file:'OneShinhanMedium.ttf',
+                        file:'NanumGothic.ttf',
                         type:'BOLD',
                         size:24,
                         color:'52,58,63',
@@ -275,7 +283,7 @@
 
                     },
                     font: {
-                        file:'OneShinhanMedium.ttf',
+                        file:'NanumGothic.ttf',
                         type:'BOLD',
                         size:24,
                         color:'52,58,63',
@@ -288,7 +296,7 @@
                                 L:'ㅁㄴㅇㄹㅎㅗㅓㅏㅣ',
                                 U:'ㅁㄴㅇㄹㅎㅗㅓㅏㅣ'
                         },
-                        special:'()-_=+[{]}'
+                        special:`\\|;:/?,<.`
                     },
                     display:{
                         y:'14',
@@ -314,7 +322,7 @@
 
                     },
                     font: {
-                        file:'OneShinhanMedium.ttf',
+                        file:'NanumGothic.ttf',
                         type:'BOLD',
                         size:24,
                         color:'52,58,63',
@@ -327,7 +335,7 @@
                                 L:'ㅋㅌㅊㅍㅠㅜㅡ',
                                 U:'ㅋㅌㅊㅍㅠㅜㅡ'
                         },
-                        special:`>""+-*/`
+                        special:`>'"+-*/`
                     },
                     display:{
                         y:'14',
@@ -350,7 +358,7 @@
 
                     },
                     font: {
-                        file:'OneShinhanMedium.ttf',
+                        file:'NanumGothic.ttf',
                         type:'BOLD',
                         size:24,
                         color:'52,58,63',

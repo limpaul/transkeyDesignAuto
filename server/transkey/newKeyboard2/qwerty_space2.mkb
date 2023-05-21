@@ -1,13 +1,13 @@
-## Created at 2023. 05. 13
-## Created by bwlim
+## Created at 2010. 04. 20
+## Created by Wooks
 
 renderer.type=linear
 renderer.dummy.count=1
 renderer.dummy.file=logo.png
 renderer.font.file=NanumGothic.ttf
 renderer.font.type=BOLD
-renderer.font.size=30
-renderer.font.color=210,25,25
+renderer.font.size=27
+renderer.font.color=51,69,105
 renderer.font.location="0,-6"
 renderer.chars.lower="1234567890"
 renderer.chars.upper="1234567890"
@@ -24,21 +24,22 @@ renderer.key8="rect:435,1,54,82"
 renderer.key9="rect:489,1,54,82"
 renderer.key10="rect:543,1,54,82"
 
+
 renderer.type=linear
 renderer.dummy.count=1
 renderer.dummy.file=logo.png
 renderer.font.file=NanumGothic.ttf
 renderer.font.type=BOLD
-renderer.font.size=24
-renderer.font.color=208,22,22
+renderer.font.size=27
+renderer.font.color=51,69,105
 renderer.font.location="0,-7"
 renderer.chars.lower="qwertyuiop"
 renderer.chars.upper="QWERTYUIOP"
-renderer.chars.special="()-_=+[{]}"
 renderer.chars.display.L="ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔ"
 renderer.chars.display.U="ㅃㅉㄸㄲㅆㅛㅕㅑㅒㅖ"
 renderer.display.y="14"
 renderer.display.size="16"
+renderer.chars.special="()-_=+[{]}"
 renderer.key0="rect:1,83,54,82"
 renderer.key1="rect:55,83,54,82"
 renderer.key2="rect:109,83,54,82"
@@ -56,8 +57,8 @@ renderer.dummy.count=2
 renderer.dummy.file=logo.png
 renderer.font.file=NanumGothic.ttf
 renderer.font.type=BOLD
-renderer.font.size=24
-renderer.font.color=226,8,8
+renderer.font.size=27
+renderer.font.color=51,69,105
 renderer.font.location="0,-7"
 renderer.chars.lower="asdfghjkl"
 renderer.chars.upper="ASDFGHJKL"
@@ -83,8 +84,8 @@ renderer.dummy.count=1
 renderer.dummy.file=logo.png
 renderer.font.file=NanumGothic.ttf
 renderer.font.type=BOLD
-renderer.font.size=24
-renderer.font.color=244,11,11
+renderer.font.size=27
+renderer.font.color=51,69,105
 renderer.font.location="0,-7"
 renderer.chars.lower="zxcvbnm"
 renderer.chars.upper="ZXCVBNM"
@@ -101,13 +102,14 @@ renderer.key4="rect:271,247,54,82"
 renderer.key5="rect:325,247,54,82"
 renderer.key6="rect:380,247,54,82"
 renderer.key7="rect:435,247,54,82"
+
 renderer.type=linear
 renderer.dummy.count=0
 renderer.dummy.file=logo.png
 renderer.font.file=NanumGothic.ttf
 renderer.font.type=BOLD
-renderer.font.size=24
-renderer.font.color=235,0,0
+renderer.font.size=27
+renderer.font.color=51,69,105
 renderer.font.location="0,-7"
 renderer.chars.lower="→"
 renderer.chars.upper="→"
@@ -115,6 +117,7 @@ renderer.chars.special="→"
 renderer.display.y="14"
 renderer.display.size="16"
 renderer.key0="rect:218,329,164,83"
+
 key.caps="rect:1,247,54,82"
 key.special="rect:1,329,109,82"
 key.clear="rect:110,329,109,82"
